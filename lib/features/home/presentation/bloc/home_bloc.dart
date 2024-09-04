@@ -9,6 +9,7 @@ import 'package:games_manager/features/home/domain/usecases/booking_usecase/upda
 import 'package:games_manager/features/home/domain/usecases/device_usecase/add_device_usecase.dart';
 import 'package:games_manager/features/home/domain/usecases/device_usecase/delete_device_usecase.dart';
 import 'package:games_manager/features/home/domain/usecases/device_usecase/get_all_devices_usecase.dart';
+import 'package:games_manager/features/home/domain/usecases/device_usecase/toggle_device_idle_state_usecase.dart';
 import 'package:games_manager/features/home/domain/usecases/device_usecase/update_device_usecase.dart';
 
 import '../../data/repositories/home_repo_impl.dart';
@@ -20,6 +21,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc() : super(HomeState()) {
     HomeRepoImpl homeRepoImpl = HomeRepoImpl(HomeLocalDataSourceImpl());
     on<GetDevicesListEvent>((event, emit) {
+      emit(state.copyWith(deviceListStatus: Status.beginning));
       final result = GetAllDevicesUsecase(homeRepoImpl).call();
       result.fold(
         (l) => emit(state.copyWith(deviceListStatus: Status.failed)),
@@ -28,6 +30,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       );
     });
     on<AddDeviceEvent>((event, emit) {
+      emit(state.copyWith(deviceListStatus: Status.beginning));
       final result = AddDeviceUsecase(homeRepoImpl).call(event.device);
       result.fold(
         (l) => emit(state.copyWith(deviceListStatus: Status.failed)),
@@ -35,13 +38,24 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       );
     });
     on<UpdateDeviceEvent>((event, emit) {
+      emit(state.copyWith(deviceListStatus: Status.beginning));
       final result = UpdateDeviceUsecase(homeRepoImpl).call(event.device);
       result.fold(
         (l) => emit(state.copyWith(deviceListStatus: Status.failed)),
         (r) => emit(state.copyWith(deviceListStatus: Status.updated)),
       );
     });
+    on<ToggleDeviceIdelEvent>((event, emit) {
+      emit(state.copyWith(toggleDeviceIdelStatus: Status.beginning));
+      final result =
+          ToggleDeviceIdleStateUsecase(homeRepoImpl).call(event.deviceId);
+      result.fold(
+        (l) => emit(state.copyWith(toggleDeviceIdelStatus: Status.failed)),
+        (r) => emit(state.copyWith(toggleDeviceIdelStatus: Status.updated)),
+      );
+    });
     on<DeleteDeviceEvent>((event, emit) {
+      emit(state.copyWith(deviceListStatus: Status.beginning));
       final result = DeleteDeviceUsecase(homeRepoImpl).call(event.id);
       result.fold(
         (l) => emit(state.copyWith(deviceListStatus: Status.failed)),
@@ -49,6 +63,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       );
     });
     on<GetBookingByDeviceIdEvent>((event, emit) {
+      emit(state.copyWith(bookingItemStatus: Status.beginning));
       final result =
           GetBookingByDeviceIdUsecase(homeRepoImpl).call(event.deviceId);
       result.fold(
@@ -58,6 +73,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       );
     });
     on<AddBookingEvent>((event, emit) {
+      emit(state.copyWith(bookingItemStatus: Status.beginning));
       final result = AddBookingUsecase(homeRepoImpl).call(event.booking);
       result.fold(
         (l) => emit(state.copyWith(bookingItemStatus: Status.failed)),
@@ -65,6 +81,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       );
     });
     on<UpdateBookingEvent>((event, emit) {
+      emit(state.copyWith(bookingItemStatus: Status.beginning));
       final result = UpdateBookingUsecase(homeRepoImpl).call(event.booking);
       result.fold(
         (l) => emit(state.copyWith(bookingItemStatus: Status.failed)),
@@ -72,6 +89,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       );
     });
     on<DeleteBookingEvent>((event, emit) {
+      emit(state.copyWith(bookingItemStatus: Status.beginning));
       final result = DeleteBookingUsecase(homeRepoImpl).call(event.booking);
       result.fold(
         (l) => emit(state.copyWith(bookingItemStatus: Status.failed)),

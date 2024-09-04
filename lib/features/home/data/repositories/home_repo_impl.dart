@@ -60,4 +60,10 @@ class HomeRepoImpl with HandlingExceptionManager implements HomeRepo {
     final result = homeLocalDataSourceImpl.updateDevice(id, updatedDevice);
     return Right(result);
   }
+
+  @override
+  Either<Failure, void> toggleDeviceIdelState(String deviceId) {
+    final result = homeLocalDataSourceImpl.toggleDeviceIdelState(deviceId);
+    return Right(result);
+  }
 }

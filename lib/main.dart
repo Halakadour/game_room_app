@@ -15,6 +15,7 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(DeviceEntityAdapter());
   Hive.registerAdapter(BookingEntityAdapter());
+  Hive.registerAdapter(TimeOfDayAdapter());
   await Hive.openBox<DeviceEntity>("devices");
   await Hive.openBox<BookingEntity>("bookings");
   runApp(EasyLocalization(

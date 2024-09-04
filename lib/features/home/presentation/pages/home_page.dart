@@ -55,8 +55,8 @@ class _HomePageState extends State<HomePage> {
                             id: state.deviceList[index].id,
                             name: state.deviceList[index].name,
                             type: state.deviceList[index].type,
-                            costPerHoure:
-                                state.deviceList[index].costPerHoure)));
+                            costPerHoure: state.deviceList[index].costPerHoure,
+                            idle: state.deviceList[index].idle)));
               },
             ))
           ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:games_manager/core/functions/final_cost_calculation.dart';
 import 'package:games_manager/core/functions/generate_unique.dart';
 import 'package:games_manager/core/widgets/custom_text_field.dart';
 import 'package:games_manager/features/home/domain/entities/booking_entity.dart';
@@ -63,7 +64,8 @@ class _DeviceCardState extends State<DeviceCard> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HomeBloc, HomeState>(
-      buildWhen: (previous, current) => previous.bookingItemStatus != current.bookingItemStatus,
+      buildWhen: (previous, current) =>
+          previous.bookingItemStatus != current.bookingItemStatus,
       builder: (context, state) {
         return Card(
           color: Colors.white,
@@ -104,7 +106,8 @@ class _DeviceCardState extends State<DeviceCard> {
                             costPerHour: widget.device.costPerHoure,
                             bookingId: IdManager.generateId()));
                   } else {
-                    const SnackBar(content: Text("الجهاز تم حجزه بالفعل"));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("الجهاز تم حجزه بالفعل")));
                   }
                 },
                 icon: Icons.edit_outlined,
@@ -127,9 +130,19 @@ class _DeviceCardState extends State<DeviceCard> {
                 "${widget.device.costPerHoure} ل.س/س",
                 style: TextStyle(color: grayColor),
               ),
-              trailing: CircleAvatar(
-                backgroundColor: widget.device.idle ? greenColor : redColor,
-                maxRadius: 8,
+              trailing: GestureDetector(
+                onTap: () {
+                  num cost = FinalCostCalculation().calculateFinalCost(
+                      bookingEntity!.startTime,
+                      bookingEntity!.endTime,
+                      widget.device.costPerHoure);
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(SnackBar(content: Text("$cost")));
+                },
+                child: CircleAvatar(
+                  backgroundColor: widget.device.idle ? greenColor : redColor,
+                  maxRadius: 8,
+                ),
               ),
             ),
           ),

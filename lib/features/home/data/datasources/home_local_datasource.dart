@@ -10,6 +10,8 @@ abstract class HomeLocalDatasource {
 
   void updateDevice(String id, DeviceEntity updatedDevice);
 
+  void toggleDeviceIdelState(String deviceId);
+
   void deleteDevice(String id);
 
   BookingEntity? getBookingByDeviceId(String deviceId);
@@ -45,13 +47,6 @@ class HomeLocalDataSourceImpl extends HomeLocalDatasource {
 
   @override
   void deleteBooking(BookingEntity booking) {
-     DeviceEntity device = deviceBox.values.firstWhere(
-      (element) => element.id == booking.deviceId,
-    );
-    if (!device.idle) {
-      device.idle = true;
-    }
-    updateDevice(device.id, device);
     bookingBox.delete(booking.id);
   }
 
@@ -84,5 +79,16 @@ class HomeLocalDataSourceImpl extends HomeLocalDatasource {
   @override
   void updateDevice(String id, DeviceEntity updatedDevice) {
     deviceBox.put(id, updatedDevice);
+  }
+
+  @override
+  Future<void> toggleDeviceIdelState(String deviceId) async {
+    DeviceEntity? device = deviceBox.values.firstWhere((d) => d.id == deviceId);
+    if (device.idle) {
+      device.idle = !device.idle;
+      await deviceBox.put(deviceId, device);
+    } else {
+      print('Device is already booked.');
+    }
   }
 }
