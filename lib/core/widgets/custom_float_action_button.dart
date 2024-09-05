@@ -100,6 +100,10 @@ class _CustomFloatActionButtonState extends State<CustomFloatActionButton> {
                 context.read<HomeBloc>().add(GetDevicesListEvent());
                 Navigator.pop(context);
               },
+              name: "حفظ",
+              buttonColor: greenColor,
+              borderColor: Colors.transparent,
+              fontColor: Colors.white,
             ),
           ]),
         ),

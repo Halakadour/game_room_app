@@ -57,13 +57,10 @@ class HomeLocalDataSourceImpl extends HomeLocalDatasource {
 
   @override
   BookingEntity? getBookingByDeviceId(String deviceId) {
-    for (int i = 0; i < bookingBox.length; i++) {
-      BookingEntity? booking = bookingBox.get(i);
-      if (booking!.deviceId == deviceId) {
-        return booking;
-      }
-    }
-    return null;
+    BookingEntity? booking = bookingBox.values.firstWhere(
+      (booking) => booking.deviceId == deviceId,
+    );
+    return booking;
   }
 
   @override
@@ -83,7 +80,8 @@ class HomeLocalDataSourceImpl extends HomeLocalDatasource {
 
   @override
   Future<void> toggleDeviceIdelState(String deviceId) async {
-    DeviceEntity? device = deviceBox.values.firstWhere((d) => d.id == deviceId);
+    DeviceEntity? device =
+        deviceBox.values.firstWhere((device) => device.id == deviceId);
     if (device.idle) {
       device.idle = !device.idle;
       await deviceBox.put(deviceId, device);

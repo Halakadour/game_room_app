@@ -22,6 +22,8 @@ class CustomTextFormField extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 15.sp),
       child: TextFormField(
         initialValue: initialValue,
+        style: TextStyle(
+            color: grayColor, fontSize: 12.sp, fontWeight: FontWeight.w600),
         enabled: enabled ?? true,
         validator: validator,
         controller: controller,
@@ -31,6 +33,12 @@ class CustomTextFormField extends StatelessWidget {
                 color: greenColor,
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w600),
+            border: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.grey.shade400,
+                  width: 1.5.sp,
+                ),
+                borderRadius: BorderRadius.circular(12.r)),
             enabledBorder: OutlineInputBorder(
                 borderSide:
                     BorderSide(color: Colors.grey.shade400, width: 1.5.sp),

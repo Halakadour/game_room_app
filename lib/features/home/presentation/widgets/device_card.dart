@@ -9,6 +9,7 @@ import 'package:games_manager/features/home/domain/entities/booking_entity.dart'
 import 'package:games_manager/features/home/domain/entities/device_entity.dart';
 import 'package:games_manager/features/home/presentation/bloc/home_bloc.dart';
 import 'package:games_manager/features/home/presentation/widgets/add_reservation_dialog.dart';
+import 'package:games_manager/features/home/presentation/widgets/close_reservation_dialog.dart';
 
 import '../../../../config/theme/app_colors.dart';
 
@@ -20,7 +21,8 @@ class DeviceCard extends StatefulWidget {
   State<DeviceCard> createState() => _DeviceCardState();
 }
 
-Future displayBottomSheet(BuildContext context, String name, String time) {
+Future displayBottomSheet(BuildContext context, String name,
+    TimeOfDay startTime, TimeOfDay endTime, num costPerHour) {
   return showModalBottomSheet(
     context: context,
     backgroundColor: Colors.white,
@@ -36,22 +38,76 @@ Future displayBottomSheet(BuildContext context, String name, String time) {
         ),
         height: .45.sh,
         width: double.infinity,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
           Text(
             "تفاصيل الجلسة",
-            style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w600),
+            style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w700),
           ),
-          20.verticalSpace,
+          25.verticalSpace,
           CustomTextFormField(
             initialValue: name,
             enabled: false,
             label: "اسم الزبون",
           ),
           CustomTextFormField(
-            initialValue: time,
+            initialValue: endTime.format(context).toString(),
             enabled: false,
             label: "الوقت",
           ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    num cost = FinalCostCalculation()
+                        .calculateFinalCost(startTime, endTime, costPerHour);
+                    showDialog(
+                      context: context,
+                      builder: (context) => CloseReservationDialog(cost: cost),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      backgroundColor: greenColor,
+                      padding: EdgeInsets.symmetric(
+                          vertical: 15.sp, horizontal: 20.sp),
+                      fixedSize: Size.fromWidth(.42.sw),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12))),
+                  child: Center(
+                    child: Text(
+                      'إغلاق الجلسة',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  )),
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      backgroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(
+                          vertical: 15.sp, horizontal: 20.sp),
+                      fixedSize: Size.fromWidth(.42.sw),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          side: BorderSide(color: redColor, width: 1.5.sp))),
+                  child: Center(
+                    child: Text(
+                      'عودة',
+                      style: TextStyle(
+                          color: redColor,
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ))
+            ],
+          )
         ]),
       ),
     ),
@@ -84,8 +140,12 @@ class _DeviceCardState extends State<DeviceCard> {
                     context.read<HomeBloc>().add(
                         GetBookingByDeviceIdEvent(deviceId: widget.device.id));
                     bookingEntity = state.bookingItem;
-                    displayBottomSheet(context, bookingEntity!.clientName,
-                        bookingEntity!.endTime.format(context).toString());
+                    displayBottomSheet(
+                        context,
+                        bookingEntity!.clientName,
+                        bookingEntity!.startTime,
+                        bookingEntity!.endTime,
+                        widget.device.costPerHoure);
                   }
                 },
                 icon: Icons.delete_outline,
@@ -95,6 +155,12 @@ class _DeviceCardState extends State<DeviceCard> {
               )
             ]),
             endActionPane: ActionPane(motion: const ScrollMotion(), children: [
+              SlidableAction(
+                onPressed: (context) {},
+                icon: Icons.edit_outlined,
+                foregroundColor: orangeColor,
+                backgroundColor: orangeColor.withOpacity(.3),
+              ),
               SlidableAction(
                 onPressed: (context) {
                   if (widget.device.idle) {
@@ -110,11 +176,12 @@ class _DeviceCardState extends State<DeviceCard> {
                         const SnackBar(content: Text("الجهاز تم حجزه بالفعل")));
                   }
                 },
-                icon: Icons.edit_outlined,
-                foregroundColor: orangeColor,
-                backgroundColor: orangeColor.withOpacity(.3),
-                borderRadius: BorderRadius.circular(12),
-              )
+                icon: Icons.add,
+                foregroundColor: greenColor,
+                backgroundColor: greenColor.withOpacity(.3),
+                borderRadius:
+                    BorderRadius.horizontal(left: Radius.circular(12)),
+              ),
             ]),
             child: ListTile(
               leading: (widget.device.type == 0)
