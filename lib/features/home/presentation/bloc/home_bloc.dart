@@ -90,7 +90,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     });
     on<DeleteBookingEvent>((event, emit) {
       emit(state.copyWith(bookingItemStatus: Status.beginning));
-      final result = DeleteBookingUsecase(homeRepoImpl).call(event.booking);
+      final result = DeleteBookingUsecase(homeRepoImpl).call(event.id);
       result.fold(
         (l) => emit(state.copyWith(bookingItemStatus: Status.failed)),
         (r) => emit(state.copyWith(bookingItemStatus: Status.deleted)),

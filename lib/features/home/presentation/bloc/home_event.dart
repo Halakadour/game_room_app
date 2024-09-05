@@ -58,8 +58,8 @@ class UpdateBookingEvent extends HomeEvent {
 }
 
 class DeleteBookingEvent extends HomeEvent {
-  BookingEntity booking;
+  String id;
   DeleteBookingEvent({
-    required this.booking,
+    required this.id,
   });
 }

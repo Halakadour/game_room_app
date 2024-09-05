@@ -53,7 +53,6 @@ class _AddReservationDialogState extends State<AddReservationDialog> {
                     if (state.bookingItemStatus == Status.added) {
                       context.read<HomeBloc>().add(
                           ToggleDeviceIdelEvent(deviceId: widget.deviceId));
-                      context.read<HomeBloc>().add(GetDevicesListEvent());
                     }
                   },
                   listenWhen: (previous, current) =>

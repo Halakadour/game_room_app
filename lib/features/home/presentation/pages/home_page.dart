@@ -46,7 +46,10 @@ class _HomePageState extends State<HomePage> {
             Expanded(
                 child: BlocBuilder<HomeBloc, HomeState>(
               buildWhen: (previous, current) =>
-                  previous.deviceList.length != current.deviceList.length,
+                  (previous.toggleDeviceIdelStatus !=
+                          current.toggleDeviceIdelStatus ||
+                      previous.deviceListStatus != current.deviceListStatus ||
+                      previous.bookingItemStatus != current.bookingItemStatus),
               builder: (context, state) {
                 return ListView.builder(
                     itemCount: state.deviceList.length,

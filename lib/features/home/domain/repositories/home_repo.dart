@@ -20,5 +20,5 @@ abstract class HomeRepo {
 
   Either<Failure, void> updateBooking(String id, BookingEntity updatedBooking);
 
-  Either<Failure, void> deleteBooking(BookingEntity booking);
+  Either<Failure, void> deleteBooking(String id);
 }
