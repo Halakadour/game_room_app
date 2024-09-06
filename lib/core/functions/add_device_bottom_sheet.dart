@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,6 +8,7 @@ import '../../config/theme/app_colors.dart';
 import '../../features/home/domain/entities/device_entity.dart';
 import '../../features/home/presentation/bloc/home_bloc.dart';
 import '../../features/home/presentation/widgets/custom_elevated_button.dart';
+import '../../lang/locale_keys.g.dart';
 import 'generate_unique.dart';
 
 Future<dynamic> addDeviceBottomSheet(
@@ -36,13 +38,13 @@ Future<dynamic> addDeviceBottomSheet(
             validator: (p0) {
               return null;
             },
-            label: "اسم الجهاز",
+            label:LocaleKeys.deviceName.tr(),
           ),
           Padding(
             padding: EdgeInsets.only(bottom: 15.sp),
             child: DropdownButtonFormField<String>(
                 decoration: InputDecoration(
-                    label: const Text("نوع الجهاز"),
+                    label: const Text(LocaleKeys.deviceType).tr(),
                     labelStyle: TextStyle(
                         color: greenColor,
                         fontSize: 12.sp,
@@ -70,7 +72,7 @@ Future<dynamic> addDeviceBottomSheet(
             validator: (p0) {
               return null;
             },
-            label: "سعر الساعة",
+            label:LocaleKeys.costPerHour.tr(),
           ),
           CustomElevatedButton(
             onPressed: () {
@@ -87,7 +89,7 @@ Future<dynamic> addDeviceBottomSheet(
               context.read<HomeBloc>().add(GetDevicesListEvent());
               Navigator.pop(context);
             },
-            name: "حفظ",
+            name:LocaleKeys.save.tr(),
             buttonColor: greenColor,
             borderColor: Colors.transparent,
             fontColor: Colors.white,

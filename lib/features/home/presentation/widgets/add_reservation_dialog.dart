@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,6 +8,7 @@ import 'package:games_manager/features/home/presentation/bloc/home_bloc.dart';
 
 import '../../../../config/theme/app_colors.dart';
 import '../../../../core/widgets/custom_text_field.dart';
+import '../../../../lang/locale_keys.g.dart';
 
 class AddReservationDialog extends StatefulWidget {
   const AddReservationDialog(
@@ -36,16 +38,16 @@ class _AddReservationDialogState extends State<AddReservationDialog> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "أدخل اسم الزبون",
+              LocaleKeys.enterCustomName,
               style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
-            ),
+            ).tr(),
             20.verticalSpace,
             CustomTextFormField(
                 controller: widget.customerNameController,
                 validator: (p0) {
                   return null;
                 },
-                label: "اسم الزبون"),
+                label: LocaleKeys.customerName.tr()),
             Row(
               children: [
                 BlocListener<HomeBloc, HomeState>(
@@ -83,31 +85,35 @@ class _AddReservationDialogState extends State<AddReservationDialog> {
                                     ),
                                   ));
                               NotificationService().scheduleNotification(
-                                  value, widget.costPerHour);
+                                  context,
+                                  widget.bookingId,
+                                  TimeOfDay.now(),
+                                  value,
+                                  widget.costPerHour);
                             });
                             Navigator.pop(context);
                           }
                         });
                       },
                       child: Text(
-                        "التالي",
+                        LocaleKeys.next,
                         style: TextStyle(
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w600,
                             color: greenColor),
-                      )),
+                      ).tr()),
                 ),
                 TextButton(
                     onPressed: () {
                       Navigator.pop(context);
                     },
                     child: Text(
-                      "إلغاء",
+                      LocaleKeys.thedevices,
                       style: TextStyle(
                           fontSize: 13.sp,
                           fontWeight: FontWeight.w600,
                           color: greenColor),
-                    ))
+                    ).tr())
               ],
             )
           ],

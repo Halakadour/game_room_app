@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:games_manager/config/theme/app_colors.dart';
 import 'package:games_manager/features/home/presentation/pages/home_page.dart';
 
@@ -27,6 +28,12 @@ class _SplashPageState extends State<SplashPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: splashColor,
+      body: Center(
+        child: SizedBox(
+            width: .5.sw,
+            height: .5.sh,
+            child: Image.asset("assets/images/splash.png")),
+      ),
     );
   }
 }

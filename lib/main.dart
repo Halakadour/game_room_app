@@ -46,7 +46,8 @@ class MainApp extends StatelessWidget {
         theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: greenColor),
             scaffoldBackgroundColor: backgroundColor,
-            fontFamily: 'Cairo'),
+            fontFamily:
+                context.locale.languageCode == 'ar' ? 'Cairo' : 'Outfit'),
         home: const SplashPage(),
       ),
     );

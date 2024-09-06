@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,6 +16,7 @@ import 'package:slide_countdown/slide_countdown.dart';
 
 import '../../../../config/theme/app_colors.dart';
 import '../../../../core/functions/show_device_booking_details.dart';
+import '../../../../lang/locale_keys.g.dart';
 
 class DeviceCard extends StatefulWidget {
   const DeviceCard({super.key, required this.device});
@@ -87,12 +89,12 @@ class _DeviceCardState extends State<DeviceCard> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  "الوقت المتبقي",
+                                 LocaleKeys.theTimeRem,
                                   style: TextStyle(
                                       color: greenColor,
                                       fontWeight: FontWeight.w700,
                                       fontSize: 16.sp),
-                                ),
+                                ).tr(),
                                 SlideCountdown(
                                   separatorStyle: TextStyle(
                                       color: Colors.black,
@@ -110,11 +112,10 @@ class _DeviceCardState extends State<DeviceCard> {
                                   duration: calculateTimeDifference(
                                       TimeOfDay.now(), bookingEntity!.endTime),
                                   onDone: () {
-                                    num cost = FinalCostCalculation()
-                                        .calculateFinalCost(
-                                            bookingEntity!.startTime,
-                                            bookingEntity!.endTime,
-                                            widget.device.costPerHoure);
+                                    num cost = calculateFinalCost(
+                                        bookingEntity!.startTime,
+                                        bookingEntity!.endTime,
+                                        widget.device.costPerHoure);
                                     context.read<HomeBloc>().add(
                                         DeleteBookingEvent(
                                             id: bookingEntity!.id));
@@ -148,15 +149,8 @@ class _DeviceCardState extends State<DeviceCard> {
                           .add(DeleteDeviceEvent(id: widget.device.id));
                       context.read<HomeBloc>().add(GetDevicesListEvent());
                     } else {
-                      context.read<HomeBloc>().add(GetBookingByDeviceIdEvent(
-                          deviceId: widget.device.id));
-                      print(state.bookingItemStatus);
-                      bookingEntity = state.bookingItem;
-                      if (bookingEntity != null &&
-                          (bookingEntity!.deviceId == widget.device.id)) {
-                        displayBookingDetailsBottomSheet(context,
-                            bookingEntity!, widget.device.costPerHoure);
-                      }
+                      ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+                          content: const Text(LocaleKeys.cannotBeDeleted).tr()));
                     }
                   },
                   icon: Icons.delete_outline,
@@ -169,7 +163,19 @@ class _DeviceCardState extends State<DeviceCard> {
                   ActionPane(motion: const ScrollMotion(), children: [
                 SlidableAction(
                   onPressed: (context) {
-                    displayUpdateDeviceBottomSheet(context);
+                    if (widget.device.idle) {
+                      displayUpdateDeviceBottomSheet(context);
+                    } else {
+                      context.read<HomeBloc>().add(GetBookingByDeviceIdEvent(
+                          deviceId: widget.device.id));
+                      print(state.bookingItemStatus);
+                      bookingEntity = state.bookingItem;
+                      if (bookingEntity != null &&
+                          (bookingEntity!.deviceId == widget.device.id)) {
+                        displayBookingDetailsBottomSheet(context,
+                            bookingEntity!, widget.device.costPerHoure);
+                      }
+                    }
                   },
                   icon: Icons.edit_outlined,
                   foregroundColor: orangeColor,
@@ -186,8 +192,8 @@ class _DeviceCardState extends State<DeviceCard> {
                               costPerHour: widget.device.costPerHoure,
                               bookingId: IdManager.generateId()));
                     } else {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text("الجهاز تم حجزه بالفعل")));
+                      ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+                          content: const Text(LocaleKeys.deviceAlreadyReserved).tr()));
                     }
                   },
                   icon: Icons.add,
@@ -208,15 +214,13 @@ class _DeviceCardState extends State<DeviceCard> {
                   style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
                 subtitle: Text(
-                  "${widget.device.costPerHoure} ل.س/س",
+                  "${widget.device.costPerHoure} ${LocaleKeys.syphr}",
                   style: TextStyle(color: grayColor),
-                ),
+                ).tr(),
                 trailing: GestureDetector(
                   onTap: () {
-                    num cost = FinalCostCalculation().calculateFinalCost(
-                        bookingEntity!.startTime,
-                        bookingEntity!.endTime,
-                        widget.device.costPerHoure);
+                    num cost = calculateFinalCost(bookingEntity!.startTime,
+                        bookingEntity!.endTime, widget.device.costPerHoure);
                     ScaffoldMessenger.of(context)
                         .showSnackBar(SnackBar(content: Text("$cost")));
                   },

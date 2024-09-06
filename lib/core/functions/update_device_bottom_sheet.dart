@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,6 +7,7 @@ import 'package:games_manager/core/widgets/custom_text_field.dart';
 import '../../config/theme/app_colors.dart';
 import '../../features/home/domain/entities/device_entity.dart';
 import '../../features/home/presentation/bloc/home_bloc.dart';
+import '../../lang/locale_keys.g.dart';
 
 Future<dynamic> updateDeviceBottomSheet(
   BuildContext context,
@@ -38,13 +40,13 @@ Future<dynamic> updateDeviceBottomSheet(
             validator: (p0) {
               return null;
             },
-            label: "اسم الجهاز",
+            label: LocaleKeys.deviceName.tr(),
           ),
           Padding(
             padding: EdgeInsets.only(bottom: 15.sp),
             child: DropdownButtonFormField<String>(
               decoration: InputDecoration(
-                  label: const Text("نوع الجهاز"),
+                  label: const Text(LocaleKeys.deviceType).tr(),
                   labelStyle: TextStyle(
                       color: greenColor,
                       fontSize: 12.sp,
@@ -76,7 +78,7 @@ Future<dynamic> updateDeviceBottomSheet(
             validator: (p0) {
               return null;
             },
-            label: "سعر الساعة",
+            label: LocaleKeys.costPerHour.tr(),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -107,7 +109,7 @@ Future<dynamic> updateDeviceBottomSheet(
                           borderRadius: BorderRadius.circular(12))),
                   child: Center(
                     child: Text(
-                      'تعديل',
+                      LocaleKeys.save.tr(),
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 12.sp,
@@ -129,7 +131,7 @@ Future<dynamic> updateDeviceBottomSheet(
                           side: BorderSide(color: redColor, width: 1.5.sp))),
                   child: Center(
                     child: Text(
-                      'عودة',
+                      LocaleKeys.back,
                       style: TextStyle(
                           color: redColor,
                           fontSize: 12.sp,

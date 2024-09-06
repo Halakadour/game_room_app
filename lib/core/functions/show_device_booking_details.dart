@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,6 +9,7 @@ import 'package:games_manager/features/home/presentation/bloc/home_bloc.dart';
 
 import '../../config/theme/app_colors.dart';
 import '../../features/home/presentation/widgets/close_reservation_dialog.dart';
+import '../../lang/locale_keys.g.dart';
 
 Future<dynamic> showDeviceBookingDetails(
     BuildContext context, BookingEntity booking, num costPerHour) {
@@ -28,19 +30,19 @@ Future<dynamic> showDeviceBookingDetails(
         width: double.infinity,
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
           Text(
-            "تفاصيل الجلسة",
+           LocaleKeys.sessionDetails,
             style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w700),
-          ),
+          ).tr(),
           25.verticalSpace,
           CustomTextFormField(
             initialValue: booking.clientName,
             enabled: false,
-            label: "اسم الزبون",
+            label: LocaleKeys.customerName.tr(),
           ),
           CustomTextFormField(
             initialValue: booking.endTime.format(context).toString(),
             enabled: false,
-            label: "الوقت",
+            label: LocaleKeys.time.tr(),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -58,16 +60,16 @@ Future<dynamic> showDeviceBookingDetails(
                 child: ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      num cost = FinalCostCalculation().calculateFinalCost(
+                      num cost = calculateFinalCost(
                           booking.startTime, TimeOfDay.now(), costPerHour);
-                      context
-                          .read<HomeBloc>()
-                          .add(DeleteBookingEvent(id: booking.id));
                       showDialog(
                         context: context,
                         builder: (context) =>
                             CloseReservationDialog(cost: cost),
                       );
+                      context
+                          .read<HomeBloc>()
+                          .add(DeleteBookingEvent(id: booking.id));
                     },
                     style: ElevatedButton.styleFrom(
                         elevation: 0,
@@ -79,12 +81,12 @@ Future<dynamic> showDeviceBookingDetails(
                             borderRadius: BorderRadius.circular(12))),
                     child: Center(
                       child: Text(
-                        'إغلاق الجلسة',
+                        LocaleKeys.closeSession,
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 12.sp,
                             fontWeight: FontWeight.w600),
-                      ),
+                      ).tr(),
                     )),
               ),
               ElevatedButton(
@@ -102,12 +104,12 @@ Future<dynamic> showDeviceBookingDetails(
                           side: BorderSide(color: redColor, width: 1.5.sp))),
                   child: Center(
                     child: Text(
-                      'عودة',
+                     LocaleKeys.back,
                       style: TextStyle(
                           color: redColor,
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w600),
-                    ),
+                    ).tr(),
                   ))
             ],
           )

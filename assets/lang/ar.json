@@ -1,3 +1,24 @@
 {
-    "thedevices" : "الأجهزة"
+    "thedevices" : "الأجهزة",
+    "settings" : "الإعدادات",
+    "lang": "اللغة",
+    "theTimeRem" : "الوقت المتبقي",
+    "cannotBeDeleted" : "لا يمكن حذف الجهاز لأنه محجوز",
+    "deviceAlreadyReserved" : "الجهاز تم حجزه بالفعل",
+    "syphr" : "ل.س/س",
+    "sessionDetails" : "تفاصيل الجلسة",
+    "enterCustomName" : "أدخل اسم الزبون",
+    "customerName" : "اسم الزبون",
+    "time" : "الوقت",
+    "closeSession" : "إغلاق الجلسة",
+    "back" : "عودة",
+    "deviceName" : "اسم الجهاز",
+    "deviceType" : "نوع الجهاز",
+    "costPerHour" : "سعر الساعة",
+    "save" : "حفظ",
+    "close" : "إغلاق",
+    "next" : "التالي",
+    "cancel" : "إلغاء",
+    "sessionClosed" : "تم إغلاق الجلسة",
+    "customerInvoice" : "حساب الزبون : "
 }

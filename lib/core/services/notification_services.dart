@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:games_manager/core/functions/final_cost_calculation.dart';
+import 'package:games_manager/features/home/presentation/bloc/home_bloc.dart';
+
+import '../functions/calculate_time_difference.dart';
 
 class NotificationService {
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
@@ -32,20 +37,14 @@ class NotificationService {
         id, title, body, platformChannelSpecifics);
   }
 
-  void scheduleNotification(TimeOfDay endTime, num costPerHour) async {
+  void scheduleNotification(BuildContext context, String bookingId,
+      TimeOfDay startTime, TimeOfDay endTime, num costPerHour) async {
     final notificationService = NotificationService();
     await notificationService.init();
-    final now = DateTime.now();
-    DateTime startDateTime =
-        DateTime(now.year, now.month, now.day, now.hour, now.minute);
-    DateTime endDateTime =
-        DateTime(now.year, now.month, now.day, endTime.hour, endTime.minute);
-    if (endDateTime.isBefore(startDateTime)) {
-      endDateTime = endDateTime.add(const Duration(days: 1));
-    }
-    final difference = endDateTime.difference(startDateTime);
-    final totalCost = (difference.inMinutes / 60) * costPerHour;
+    final difference = calculateTimeDifference(startTime, endTime);
+    final totalCost = calculateFinalCost(startTime, endTime, costPerHour);
     await Future.delayed(difference, () {
+      context.read<HomeBloc>().add(DeleteBookingEvent(id: bookingId));
       notificationService.showNotification(
         0,
         'تنبيه حجز',

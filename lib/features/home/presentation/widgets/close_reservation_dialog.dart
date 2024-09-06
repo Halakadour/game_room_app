@@ -1,6 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:games_manager/config/theme/app_colors.dart';
+
+import '../../../../lang/locale_keys.g.dart';
 
 class CloseReservationDialog extends StatelessWidget {
   const CloseReservationDialog({super.key, required this.cost});
@@ -17,21 +20,21 @@ class CloseReservationDialog extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "تم إغلاق الجلسة",
+              LocaleKeys.sessionClosed,
               style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w700),
-            ),
+            ).tr(),
             20.verticalSpace,
             RichText(
                 text: TextSpan(children: <TextSpan>[
               TextSpan(
-                  text: "حساب الزبون : ",
+                  text: LocaleKeys.customerInvoice.tr(),
                   style: TextStyle(
                       color: grayColor,
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
                       fontFamily: 'Cairo')),
               TextSpan(
-                  text: "$cost ل.س",
+                  text: "${cost.toStringAsFixed(2)} ${LocaleKeys.syphr.tr()}",
                   style: TextStyle(
                       color: greenColor,
                       fontSize: 14.sp,
@@ -51,12 +54,12 @@ class CloseReservationDialog extends StatelessWidget {
                       Navigator.pop(context);
                     },
                     child: Text(
-                      "إغلاق",
+                      LocaleKeys.close,
                       style: TextStyle(
                           color: grayColor,
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w600),
-                    )),
+                    ).tr()),
               ],
             )
           ],
