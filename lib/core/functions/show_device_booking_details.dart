@@ -60,14 +60,14 @@ Future<dynamic> showDeviceBookingDetails(
                       Navigator.pop(context);
                       num cost = FinalCostCalculation().calculateFinalCost(
                           booking.startTime, TimeOfDay.now(), costPerHour);
+                      context
+                          .read<HomeBloc>()
+                          .add(DeleteBookingEvent(id: booking.id));
                       showDialog(
                         context: context,
                         builder: (context) =>
                             CloseReservationDialog(cost: cost),
                       );
-                      context
-                          .read<HomeBloc>()
-                          .add(DeleteBookingEvent(id: booking.id));
                     },
                     style: ElevatedButton.styleFrom(
                         elevation: 0,

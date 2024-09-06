@@ -8,13 +8,11 @@ class FinalCostCalculation {
         now.year, now.month, now.day, startTime.hour, startTime.minute);
     DateTime endDateTime =
         DateTime(now.year, now.month, now.day, endTime.hour, endTime.minute);
-    if (endDateTime.isBefore(now)) {
+    if (endDateTime.isBefore(startDateTime)) {
       endDateTime = endDateTime.add(const Duration(days: 1));
     }
     final difference = endDateTime.difference(startDateTime);
-    final totalCost =
-        (difference.inHours + (difference.inMinutes % 60 > 0 ? 1 : 0)) *
-            costPerHour;
+    final totalCost = (difference.inMinutes / 60) * costPerHour;
     return totalCost;
   }
 }

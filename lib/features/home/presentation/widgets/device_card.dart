@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:games_manager/core/functions/calculate_time_difference.dart';
 import 'package:games_manager/core/functions/final_cost_calculation.dart';
 import 'package:games_manager/core/functions/generate_unique.dart';
+import 'package:games_manager/core/functions/update_device_bottom_sheet.dart';
 import 'package:games_manager/features/home/domain/entities/booking_entity.dart';
 import 'package:games_manager/features/home/domain/entities/device_entity.dart';
 import 'package:games_manager/features/home/presentation/bloc/home_bloc.dart';
 import 'package:games_manager/features/home/presentation/widgets/add_reservation_dialog.dart';
+import 'package:games_manager/features/home/presentation/widgets/close_reservation_dialog.dart';
+import 'package:slide_countdown/slide_countdown.dart';
 
 import '../../../../config/theme/app_colors.dart';
 import '../../../../core/functions/show_device_booking_details.dart';
@@ -19,108 +24,206 @@ class DeviceCard extends StatefulWidget {
   State<DeviceCard> createState() => _DeviceCardState();
 }
 
-Future displayBottomSheet(
-    BuildContext context, BookingEntity booking, num costPerHour) {
-  return showDeviceBookingDetails(context, booking, costPerHour);
-}
-
 class _DeviceCardState extends State<DeviceCard> {
   TextEditingController customerNameController = TextEditingController();
   BookingEntity? bookingEntity;
+  String dropdownvalue = "PC";
+  Future displayBookingDetailsBottomSheet(
+      BuildContext context, BookingEntity booking, num costPerHour) {
+    return showDeviceBookingDetails(context, booking, costPerHour);
+  }
+
+  Future displayUpdateDeviceBottomSheet(BuildContext context) {
+    return updateDeviceBottomSheet(context, widget.device, dropdownvalue,
+        (String? newValue) {
+      setState(() {
+        dropdownvalue = newValue!;
+      });
+    });
+  }
 
   @override
   void didChangeDependencies() {
-    context
-        .read<HomeBloc>()
-        .add(GetBookingByDeviceIdEvent(deviceId: widget.device.id));
+    dropdownvalue = widget.device.type == 0
+        ? "PC"
+        : widget.device.type == 1
+            ? "XBOX"
+            : "PLAYSTATION";
     super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeBloc, HomeState>(
-      buildWhen: (previous, current) =>  previous.bookingItemStatus != current.bookingItemStatus,
+    return BlocConsumer<HomeBloc, HomeState>(
+      listener: (context, state) {
+        if (state.bookingItemStatus == Status.deleted) {
+          context
+              .read<HomeBloc>()
+              .add(ToggleDeviceIdelEvent(deviceId: bookingEntity!.deviceId));
+        }
+      },
+      listenWhen: (previous, current) =>
+          previous.bookingItemStatus != current.bookingItemStatus,
+      buildWhen: (previous, current) =>
+          previous.bookingItemStatus != current.bookingItemStatus,
       builder: (context, state) {
-        return Card(
-          color: Colors.white,
-          elevation: 3,
-          child: Slidable(
-            startActionPane:
-                ActionPane(motion: const ScrollMotion(), children: [
-              SlidableAction(
-                onPressed: (context) {
-                  bookingEntity = state.bookingItem;
-                  if (bookingEntity == null) {
-                    context
-                        .read<HomeBloc>()
-                        .add(DeleteDeviceEvent(id: widget.device.id));
-                    context.read<HomeBloc>().add(GetDevicesListEvent());
-                  } else {
-                    displayBottomSheet(
-                        context, bookingEntity!, widget.device.costPerHoure);
-                  }
-                },
-                icon: Icons.delete_outline,
-                foregroundColor: redColor,
-                backgroundColor: redColor.withOpacity(.4),
-                borderRadius: BorderRadius.circular(12),
-              )
-            ]),
-            endActionPane: ActionPane(motion: const ScrollMotion(), children: [
-              SlidableAction(
-                onPressed: (context) {},
-                icon: Icons.edit_outlined,
-                foregroundColor: orangeColor,
-                backgroundColor: orangeColor.withOpacity(.3),
-              ),
-              SlidableAction(
-                onPressed: (context) {
-                  if (widget.device.idle) {
-                    showDialog(
-                        context: context,
-                        builder: (context) => AddReservationDialog(
-                            customerNameController: customerNameController,
-                            deviceId: widget.device.id,
-                            costPerHour: widget.device.costPerHoure,
-                            bookingId: IdManager.generateId()));
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("الجهاز تم حجزه بالفعل")));
-                  }
-                },
-                icon: Icons.add,
-                foregroundColor: greenColor,
-                backgroundColor: greenColor.withOpacity(.3),
-                borderRadius:
-                    const BorderRadius.horizontal(left: Radius.circular(12)),
-              ),
-            ]),
-            child: ListTile(
-              leading: (widget.device.type == 0)
-                  ? Icon(Icons.laptop, color: grayColor)
-                  : (widget.device.type == 1)
-                      ? Icon(Icons.card_giftcard_rounded, color: grayColor)
-                      : Icon(Icons.gamepad_rounded, color: grayColor),
-              title: Text(
-                widget.device.name,
-                style: const TextStyle(fontWeight: FontWeight.w600),
-              ),
-              subtitle: Text(
-                "${widget.device.costPerHoure} ل.س/س",
-                style: TextStyle(color: grayColor),
-              ),
-              trailing: GestureDetector(
-                onTap: () {
-                  num cost = FinalCostCalculation().calculateFinalCost(
-                      bookingEntity!.startTime,
-                      bookingEntity!.endTime,
-                      widget.device.costPerHoure);
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(SnackBar(content: Text("$cost")));
-                },
-                child: CircleAvatar(
-                  backgroundColor: widget.device.idle ? greenColor : redColor,
-                  maxRadius: 8,
+        return GestureDetector(
+          onTap: () {
+            if (!widget.device.idle) {
+              context
+                  .read<HomeBloc>()
+                  .add(GetBookingByDeviceIdEvent(deviceId: widget.device.id));
+              print(state.bookingItemStatus);
+              bookingEntity = state.bookingItem;
+              (bookingEntity != null &&
+                      (bookingEntity!.deviceId == widget.device.id))
+                  ? showDialog(
+                      context: context,
+                      builder: (context) {
+                        return Dialog(
+                          child: SizedBox(
+                            height: .2.sh,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "الوقت المتبقي",
+                                  style: TextStyle(
+                                      color: greenColor,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 16.sp),
+                                ),
+                                SlideCountdown(
+                                  separatorStyle: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 20.sp),
+                                  decoration: BoxDecoration(
+                                    color: Colors.transparent,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 20.sp),
+                                  padding: EdgeInsets.all(20.sp),
+                                  duration: calculateTimeDifference(
+                                      TimeOfDay.now(), bookingEntity!.endTime),
+                                  onDone: () {
+                                    num cost = FinalCostCalculation()
+                                        .calculateFinalCost(
+                                            bookingEntity!.startTime,
+                                            bookingEntity!.endTime,
+                                            widget.device.costPerHoure);
+                                    context.read<HomeBloc>().add(
+                                        DeleteBookingEvent(
+                                            id: bookingEntity!.id));
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) =>
+                                          CloseReservationDialog(cost: cost),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      })
+                  : SizedBox;
+            }
+          },
+          child: Card(
+            clipBehavior: Clip.hardEdge,
+            color: Colors.white,
+            elevation: 3,
+            child: Slidable(
+              startActionPane:
+                  ActionPane(motion: const ScrollMotion(), children: [
+                SlidableAction(
+                  onPressed: (context) {
+                    if (widget.device.idle) {
+                      context
+                          .read<HomeBloc>()
+                          .add(DeleteDeviceEvent(id: widget.device.id));
+                      context.read<HomeBloc>().add(GetDevicesListEvent());
+                    } else {
+                      context.read<HomeBloc>().add(GetBookingByDeviceIdEvent(
+                          deviceId: widget.device.id));
+                      print(state.bookingItemStatus);
+                      bookingEntity = state.bookingItem;
+                      if (bookingEntity != null &&
+                          (bookingEntity!.deviceId == widget.device.id)) {
+                        displayBookingDetailsBottomSheet(context,
+                            bookingEntity!, widget.device.costPerHoure);
+                      }
+                    }
+                  },
+                  icon: Icons.delete_outline,
+                  foregroundColor: redColor,
+                  backgroundColor: redColor.withOpacity(.4),
+                  borderRadius: BorderRadius.circular(12),
+                )
+              ]),
+              endActionPane:
+                  ActionPane(motion: const ScrollMotion(), children: [
+                SlidableAction(
+                  onPressed: (context) {
+                    displayUpdateDeviceBottomSheet(context);
+                  },
+                  icon: Icons.edit_outlined,
+                  foregroundColor: orangeColor,
+                  backgroundColor: orangeColor.withOpacity(.3),
+                ),
+                SlidableAction(
+                  onPressed: (context) {
+                    if (widget.device.idle) {
+                      showDialog(
+                          context: context,
+                          builder: (context) => AddReservationDialog(
+                              customerNameController: customerNameController,
+                              deviceId: widget.device.id,
+                              costPerHour: widget.device.costPerHoure,
+                              bookingId: IdManager.generateId()));
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text("الجهاز تم حجزه بالفعل")));
+                    }
+                  },
+                  icon: Icons.add,
+                  foregroundColor: greenColor,
+                  backgroundColor: greenColor.withOpacity(.3),
+                  borderRadius:
+                      const BorderRadius.horizontal(left: Radius.circular(12)),
+                ),
+              ]),
+              child: ListTile(
+                leading: (widget.device.type == 0)
+                    ? Icon(Icons.laptop, color: grayColor)
+                    : (widget.device.type == 1)
+                        ? Icon(Icons.card_giftcard_rounded, color: grayColor)
+                        : Icon(Icons.gamepad_rounded, color: grayColor),
+                title: Text(
+                  widget.device.name,
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+                subtitle: Text(
+                  "${widget.device.costPerHoure} ل.س/س",
+                  style: TextStyle(color: grayColor),
+                ),
+                trailing: GestureDetector(
+                  onTap: () {
+                    num cost = FinalCostCalculation().calculateFinalCost(
+                        bookingEntity!.startTime,
+                        bookingEntity!.endTime,
+                        widget.device.costPerHoure);
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(SnackBar(content: Text("$cost")));
+                  },
+                  child: CircleAvatar(
+                    backgroundColor: widget.device.idle ? greenColor : redColor,
+                    maxRadius: 8,
+                  ),
                 ),
               ),
             ),

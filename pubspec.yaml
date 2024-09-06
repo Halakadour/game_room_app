@@ -19,6 +19,7 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   shared_preferences: ^2.3.2
+  slide_countdown: ^1.6.1
 
 dev_dependencies:
   flutter_test:

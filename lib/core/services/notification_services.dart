@@ -33,22 +33,24 @@ class NotificationService {
   }
 
   void scheduleNotification(TimeOfDay endTime, num costPerHour) async {
-  final notificationService = NotificationService();
-  await notificationService.init();
-  final now = DateTime.now();
-  DateTime endDateTime = DateTime(now.year, now.month, now.day, endTime.hour, endTime.minute);
-  if (endDateTime.isBefore(now)) {
-    endDateTime = endDateTime.add(const Duration(days: 1));
+    final notificationService = NotificationService();
+    await notificationService.init();
+    final now = DateTime.now();
+    DateTime startDateTime =
+        DateTime(now.year, now.month, now.day, now.hour, now.minute);
+    DateTime endDateTime =
+        DateTime(now.year, now.month, now.day, endTime.hour, endTime.minute);
+    if (endDateTime.isBefore(startDateTime)) {
+      endDateTime = endDateTime.add(const Duration(days: 1));
+    }
+    final difference = endDateTime.difference(startDateTime);
+    final totalCost = (difference.inMinutes / 60) * costPerHour;
+    await Future.delayed(difference, () {
+      notificationService.showNotification(
+        0,
+        'تنبيه حجز',
+        'انتهى وقت الحجز. التكلفة النهائية: \$${totalCost.toStringAsFixed(2)}',
+      );
+    });
   }
-  final difference = endDateTime.difference(now);
-  if (difference.isNegative) return; 
-  final totalCost = (difference.inHours + (difference.inMinutes % 60 > 0 ? 1 : 0)) * costPerHour;
-  await Future.delayed(difference, () {
-    notificationService.showNotification(
-      0, 
-      'تنبيه حجز',
-      'انتهى وقت الحجز. التكلفة النهائية: \$${totalCost.toStringAsFixed(2)}', 
-    );
-  });
-}
 }
