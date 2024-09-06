@@ -56,16 +56,7 @@ class _DeviceCardState extends State<DeviceCard> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<HomeBloc, HomeState>(
-      listener: (context, state) {
-        if (state.bookingItemStatus == Status.deleted) {
-          context
-              .read<HomeBloc>()
-              .add(ToggleDeviceIdelEvent(deviceId: bookingEntity!.deviceId));
-        }
-      },
-      listenWhen: (previous, current) =>
-          previous.bookingItemStatus != current.bookingItemStatus,
+    return BlocBuilder<HomeBloc, HomeState>(
       buildWhen: (previous, current) =>
           previous.bookingItemStatus != current.bookingItemStatus,
       builder: (context, state) {
@@ -89,12 +80,12 @@ class _DeviceCardState extends State<DeviceCard> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                 LocaleKeys.theTimeRem,
+                                  LocaleKeys.theTimeRem.tr(),
                                   style: TextStyle(
                                       color: greenColor,
                                       fontWeight: FontWeight.w700,
                                       fontSize: 16.sp),
-                                ).tr(),
+                                ),
                                 SlideCountdown(
                                   separatorStyle: TextStyle(
                                       color: Colors.black,
@@ -118,7 +109,7 @@ class _DeviceCardState extends State<DeviceCard> {
                                         widget.device.costPerHoure);
                                     context.read<HomeBloc>().add(
                                         DeleteBookingEvent(
-                                            id: bookingEntity!.id));
+                                            booking: bookingEntity!));
                                     showDialog(
                                       context: context,
                                       builder: (context) =>
@@ -147,10 +138,10 @@ class _DeviceCardState extends State<DeviceCard> {
                       context
                           .read<HomeBloc>()
                           .add(DeleteDeviceEvent(id: widget.device.id));
-                      context.read<HomeBloc>().add(GetDevicesListEvent());
                     } else {
-                      ScaffoldMessenger.of(context).showSnackBar( SnackBar(
-                          content: const Text(LocaleKeys.cannotBeDeleted).tr()));
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content:
+                              const Text(LocaleKeys.cannotBeDeleted).tr()));
                     }
                   },
                   icon: Icons.delete_outline,
@@ -192,15 +183,18 @@ class _DeviceCardState extends State<DeviceCard> {
                               costPerHour: widget.device.costPerHoure,
                               bookingId: IdManager.generateId()));
                     } else {
-                      ScaffoldMessenger.of(context).showSnackBar( SnackBar(
-                          content: const Text(LocaleKeys.deviceAlreadyReserved).tr()));
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: const Text(LocaleKeys.deviceAlreadyReserved)
+                              .tr()));
                     }
                   },
                   icon: Icons.add,
                   foregroundColor: greenColor,
                   backgroundColor: greenColor.withOpacity(.3),
-                  borderRadius:
-                      const BorderRadius.horizontal(left: Radius.circular(12)),
+                  borderRadius: context.locale.languageCode == 'ar'
+                      ? const BorderRadius.horizontal(left: Radius.circular(12))
+                      : const BorderRadius.horizontal(
+                          right: Radius.circular(12)),
                 ),
               ]),
               child: ListTile(
@@ -214,20 +208,12 @@ class _DeviceCardState extends State<DeviceCard> {
                   style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
                 subtitle: Text(
-                  "${widget.device.costPerHoure} ${LocaleKeys.syphr}",
+                  "${widget.device.costPerHoure} ${LocaleKeys.syphr.tr()}",
                   style: TextStyle(color: grayColor),
-                ).tr(),
-                trailing: GestureDetector(
-                  onTap: () {
-                    num cost = calculateFinalCost(bookingEntity!.startTime,
-                        bookingEntity!.endTime, widget.device.costPerHoure);
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(SnackBar(content: Text("$cost")));
-                  },
-                  child: CircleAvatar(
-                    backgroundColor: widget.device.idle ? greenColor : redColor,
-                    maxRadius: 8,
-                  ),
+                ),
+                trailing: CircleAvatar(
+                  backgroundColor: widget.device.idle ? greenColor : redColor,
+                  maxRadius: 8,
                 ),
               ),
             ),

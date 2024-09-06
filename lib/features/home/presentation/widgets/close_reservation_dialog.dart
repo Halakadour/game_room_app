@@ -20,9 +20,9 @@ class CloseReservationDialog extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              LocaleKeys.sessionClosed,
+              LocaleKeys.sessionClosed.tr(),
               style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w700),
-            ).tr(),
+            ),
             20.verticalSpace,
             RichText(
                 text: TextSpan(children: <TextSpan>[
@@ -54,12 +54,12 @@ class CloseReservationDialog extends StatelessWidget {
                       Navigator.pop(context);
                     },
                     child: Text(
-                      LocaleKeys.close,
+                      LocaleKeys.close.tr(),
                       style: TextStyle(
                           color: grayColor,
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w600),
-                    ).tr()),
+                    )),
               ],
             )
           ],

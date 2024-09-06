@@ -117,27 +117,28 @@ Future<dynamic> updateDeviceBottomSheet(
                     ),
                   )),
               ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      backgroundColor: Colors.white,
-                      padding: EdgeInsets.symmetric(
-                          vertical: 15.sp, horizontal: 20.sp),
-                      fixedSize: Size.fromWidth(.42.sw),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          side: BorderSide(color: redColor, width: 1.5.sp))),
-                  child: Center(
-                    child: Text(
-                      LocaleKeys.back,
-                      style: TextStyle(
-                          color: redColor,
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w600),
-                    ),
-                  ))
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                style: ElevatedButton.styleFrom(
+                    elevation: 0,
+                    backgroundColor: Colors.white,
+                    padding: EdgeInsets.symmetric(
+                        vertical: 15.sp, horizontal: 20.sp),
+                    fixedSize: Size.fromWidth(.42.sw),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        side: BorderSide(color: redColor, width: 1.5.sp))),
+                child: Center(
+                  child: Text(
+                    LocaleKeys.back.tr(),
+                    style: TextStyle(
+                        color: redColor,
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w600),
+                  ),
+                ),
+              )
             ],
           )
         ]),

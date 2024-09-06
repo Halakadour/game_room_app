@@ -26,8 +26,8 @@ class HomeRepoImpl with HandlingExceptionManager implements HomeRepo {
   }
 
   @override
-  Either<Failure, void> deleteBooking(String id) {
-    final result = homeLocalDataSourceImpl.deleteBooking(id);
+  Either<Failure, void> deleteBooking(BookingEntity booking) {
+    final result = homeLocalDataSourceImpl.deleteBooking(booking);
     return Right(result);
   }
 

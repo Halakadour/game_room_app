@@ -22,9 +22,9 @@ class _SettingPageState extends State<SettingPage> {
         backgroundColor: Colors.transparent,
         title: Text(
           textAlign: TextAlign.center,
-          LocaleKeys.settings,
+          LocaleKeys.settings.tr(),
           style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.w700),
-        ).tr(),
+        ),
       ),
       body: Container(
         decoration: BoxDecoration(

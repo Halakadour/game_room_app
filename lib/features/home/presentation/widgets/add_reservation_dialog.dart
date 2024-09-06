@@ -38,9 +38,9 @@ class _AddReservationDialogState extends State<AddReservationDialog> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              LocaleKeys.enterCustomName,
+              LocaleKeys.enterCustomName.tr(),
               style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
-            ).tr(),
+            ),
             20.verticalSpace,
             CustomTextFormField(
                 controller: widget.customerNameController,
@@ -96,24 +96,24 @@ class _AddReservationDialogState extends State<AddReservationDialog> {
                         });
                       },
                       child: Text(
-                        LocaleKeys.next,
+                        LocaleKeys.next.tr(),
                         style: TextStyle(
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w600,
                             color: greenColor),
-                      ).tr()),
+                      )),
                 ),
                 TextButton(
                     onPressed: () {
                       Navigator.pop(context);
                     },
                     child: Text(
-                      LocaleKeys.thedevices,
+                      LocaleKeys.cancel.tr(),
                       style: TextStyle(
                           fontSize: 13.sp,
                           fontWeight: FontWeight.w600,
                           color: greenColor),
-                    ).tr())
+                    ))
               ],
             )
           ],

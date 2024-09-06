@@ -73,11 +73,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       );
     });
     on<AddBookingEvent>((event, emit) {
-      emit(state.copyWith(bookingItemStatus: Status.beginning));
+      emit(state.copyWith(bookingItemStatus: Status.beginning, toggleDeviceIdelStatus: Status.beginning));
       final result = AddBookingUsecase(homeRepoImpl).call(event.booking);
       result.fold(
-        (l) => emit(state.copyWith(bookingItemStatus: Status.failed)),
-        (r) => emit(state.copyWith(bookingItemStatus: Status.added)),
+        (l) => emit(state.copyWith(bookingItemStatus: Status.failed, toggleDeviceIdelStatus:  Status.failed)),
+        (r) => emit(state.copyWith(bookingItemStatus: Status.added, toggleDeviceIdelStatus:  Status.updated)),
       );
     });
     on<UpdateBookingEvent>((event, emit) {
@@ -89,11 +89,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       );
     });
     on<DeleteBookingEvent>((event, emit) {
-      emit(state.copyWith(bookingItemStatus: Status.beginning));
-      final result = DeleteBookingUsecase(homeRepoImpl).call(event.id);
+      emit(state.copyWith(bookingItemStatus: Status.beginning, toggleDeviceIdelStatus: Status.beginning));
+      final result = DeleteBookingUsecase(homeRepoImpl).call(event.booking);
       result.fold(
-        (l) => emit(state.copyWith(bookingItemStatus: Status.failed)),
-        (r) => emit(state.copyWith(bookingItemStatus: Status.deleted)),
+        (l) => emit(state.copyWith(bookingItemStatus: Status.failed, toggleDeviceIdelStatus: Status.failed)),
+        (r) => emit(state.copyWith(bookingItemStatus: Status.deleted, toggleDeviceIdelStatus:  Status.updated)),
       );
     });
   }

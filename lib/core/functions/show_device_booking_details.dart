@@ -30,9 +30,9 @@ Future<dynamic> showDeviceBookingDetails(
         width: double.infinity,
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
           Text(
-           LocaleKeys.sessionDetails,
+            LocaleKeys.sessionDetails.tr(),
             style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w700),
-          ).tr(),
+          ),
           25.verticalSpace,
           CustomTextFormField(
             initialValue: booking.clientName,
@@ -69,7 +69,7 @@ Future<dynamic> showDeviceBookingDetails(
                       );
                       context
                           .read<HomeBloc>()
-                          .add(DeleteBookingEvent(id: booking.id));
+                          .add(DeleteBookingEvent(booking: booking));
                     },
                     style: ElevatedButton.styleFrom(
                         elevation: 0,
@@ -81,12 +81,12 @@ Future<dynamic> showDeviceBookingDetails(
                             borderRadius: BorderRadius.circular(12))),
                     child: Center(
                       child: Text(
-                        LocaleKeys.closeSession,
+                        LocaleKeys.closeSession.tr(),
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 12.sp,
                             fontWeight: FontWeight.w600),
-                      ).tr(),
+                      ),
                     )),
               ),
               ElevatedButton(
@@ -104,12 +104,12 @@ Future<dynamic> showDeviceBookingDetails(
                           side: BorderSide(color: redColor, width: 1.5.sp))),
                   child: Center(
                     child: Text(
-                     LocaleKeys.back,
+                      LocaleKeys.back.tr(),
                       style: TextStyle(
                           color: redColor,
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w600),
-                    ).tr(),
+                    ),
                   ))
             ],
           )
