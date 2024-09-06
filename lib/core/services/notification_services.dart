@@ -37,14 +37,13 @@ class NotificationService {
         id, title, body, platformChannelSpecifics);
   }
 
-  void scheduleNotification(BuildContext context, String bookingId,
+  void scheduleNotification(
       TimeOfDay startTime, TimeOfDay endTime, num costPerHour) async {
     final notificationService = NotificationService();
     await notificationService.init();
     final difference = calculateTimeDifference(startTime, endTime);
     final totalCost = calculateFinalCost(startTime, endTime, costPerHour);
     await Future.delayed(difference, () {
-      context.read<HomeBloc>().add(DeleteBookingEvent(id: bookingId));
       notificationService.showNotification(
         0,
         'تنبيه حجز',

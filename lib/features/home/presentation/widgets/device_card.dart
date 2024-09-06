@@ -58,7 +58,8 @@ class _DeviceCardState extends State<DeviceCard> {
   Widget build(BuildContext context) {
     return BlocBuilder<HomeBloc, HomeState>(
       buildWhen: (previous, current) =>
-          previous.bookingItemStatus != current.bookingItemStatus,
+          (previous.bookingItemStatus != current.bookingItemStatus ||
+              previous.bookingItemStatus != current.bookingItemStatus),
       builder: (context, state) {
         return GestureDetector(
           onTap: () {
@@ -134,10 +135,12 @@ class _DeviceCardState extends State<DeviceCard> {
                   ActionPane(motion: const ScrollMotion(), children: [
                 SlidableAction(
                   onPressed: (context) {
+                    print(widget.device.idle);
                     if (widget.device.idle) {
                       context
                           .read<HomeBloc>()
                           .add(DeleteDeviceEvent(id: widget.device.id));
+                      context.read<HomeBloc>().add(GetDevicesListEvent());
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           content:
@@ -178,10 +181,10 @@ class _DeviceCardState extends State<DeviceCard> {
                       showDialog(
                           context: context,
                           builder: (context) => AddReservationDialog(
-                              customerNameController: customerNameController,
-                              deviceId: widget.device.id,
-                              costPerHour: widget.device.costPerHoure,
-                              bookingId: IdManager.generateId()));
+                                customerNameController: customerNameController,
+                                deviceId: widget.device.id,
+                                costPerHour: widget.device.costPerHoure,
+                              ));
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           content: const Text(LocaleKeys.deviceAlreadyReserved)

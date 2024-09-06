@@ -20,13 +20,6 @@ class UpdateDeviceEvent extends HomeEvent {
   });
 }
 
-class ToggleDeviceIdelEvent extends HomeEvent {
-  String deviceId;
-  ToggleDeviceIdelEvent({
-    required this.deviceId,
-  });
-}
-
 class DeleteDeviceEvent extends HomeEvent {
   String id;
   DeleteDeviceEvent({

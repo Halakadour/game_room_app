@@ -9,7 +9,6 @@ import 'package:games_manager/features/home/domain/usecases/booking_usecase/upda
 import 'package:games_manager/features/home/domain/usecases/device_usecase/add_device_usecase.dart';
 import 'package:games_manager/features/home/domain/usecases/device_usecase/delete_device_usecase.dart';
 import 'package:games_manager/features/home/domain/usecases/device_usecase/get_all_devices_usecase.dart';
-import 'package:games_manager/features/home/domain/usecases/device_usecase/toggle_device_idle_state_usecase.dart';
 import 'package:games_manager/features/home/domain/usecases/device_usecase/update_device_usecase.dart';
 
 import '../../data/repositories/home_repo_impl.dart';
@@ -43,15 +42,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       result.fold(
         (l) => emit(state.copyWith(deviceListStatus: Status.failed)),
         (r) => emit(state.copyWith(deviceListStatus: Status.updated)),
-      );
-    });
-    on<ToggleDeviceIdelEvent>((event, emit) {
-      emit(state.copyWith(toggleDeviceIdelStatus: Status.beginning));
-      final result =
-          ToggleDeviceIdleStateUsecase(homeRepoImpl).call(event.deviceId);
-      result.fold(
-        (l) => emit(state.copyWith(toggleDeviceIdelStatus: Status.failed)),
-        (r) => emit(state.copyWith(toggleDeviceIdelStatus: Status.updated)),
       );
     });
     on<DeleteDeviceEvent>((event, emit) {

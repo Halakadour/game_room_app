@@ -9,8 +9,6 @@ abstract class HomeRepo {
   Either<Failure, void> addDevice(DeviceEntity device);
 
   Either<Failure, void> updateDevice(String id, DeviceEntity updatedDevice);
-
-  Either<Failure, void> toggleDeviceIdelState(String deviceId);
   
   Either<Failure, void> deleteDevice(String id);
 
